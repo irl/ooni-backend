@@ -14,6 +14,7 @@ from oonib.config import config
 from oonib.onion import startTor
 from oonib.testhelpers import dns_helpers, ssl_helpers
 from oonib.testhelpers import http_helpers, tcp_helpers
+from oonib.sniffer import start_sniffer
 
 import os
 
@@ -29,6 +30,8 @@ if config.main.uid and config.main.gid:
                                       gid=config.main.gid)
 else:
     application = service.Application('oonibackend')
+
+start_sniffer()
 
 multiService = service.MultiService()
 
