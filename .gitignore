@@ -61,5 +61,8 @@ installed-files.txt
 
 # client config:
 oonib.conf
-
 oonib.pid
+
+# vagrant
+.vagrant
+
