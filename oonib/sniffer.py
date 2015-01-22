@@ -1,11 +1,12 @@
 
 import threading
+import collections
 
 from scapy.all import *
 
 from oonib.config import config
 
-sniffer = None
+sniffer = [None]
 
 class Sniffer(threading.Thread):
     """
@@ -29,7 +30,7 @@ class Sniffer(threading.Thread):
         self.start()
 
     def run(self):
-        sniff(filter="tcp port {}".format(config.helpers['http-return-json-headers'].port), iface=config.main.sniffer_interface, prn=lambda x: self.packet_recieved_callback(x))
+        sniff(filter="udp port {}".format(config.helpers['raw-udp-echo'].port), iface=config.main.sniffer_interface, prn=lambda x: self.packet_recieved_callback(x))
 
     def packet_recieved_callback(self, packet):
         """
@@ -46,7 +47,7 @@ class Sniffer(threading.Thread):
         conversation initiated by an ooni-probe.
         """
 
-        haystack = list(self.q)
+        haystack = list(self.q)[-1:] # List reversed to get most recent
         for packet in haystack:
             if IP in packet:
                 if UDP in packet:
@@ -73,6 +74,5 @@ def start_sniffer():
     """
     Begin sniffing on the configured interface.
     """
-
-    sniffer = Sniffer()
+    sniffer[0] = Sniffer()
 

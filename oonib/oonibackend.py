@@ -14,7 +14,8 @@ from oonib.config import config
 from oonib.onion import startTor
 from oonib.testhelpers import dns_helpers, ssl_helpers
 from oonib.testhelpers import http_helpers, tcp_helpers
-from oonib.sniffer import start_sniffer
+from oonib.testhelpers import udp_helpers
+from oonib.sniffer import start_sniffer, sniffer
 
 import os
 
@@ -32,6 +33,7 @@ else:
     application = service.Application('oonibackend')
 
 start_sniffer()
+print sniffer
 
 multiService = service.MultiService()
 
@@ -95,6 +97,12 @@ if config.helpers['tcp-echo'].port:
                                          tcp_helpers.TCPEchoHelper())
     multiService.addService(tcp_echo_helper)
     tcp_echo_helper.startService()
+
+if config.helpers['raw-udp-echo'].port:
+    print "Starting raw UDP echo helper on %s" % config.helpers['raw-udp-echo'].port
+    raw_udp_echo_helper = internet.UDPServer(int(config.helpers['raw-udp-echo'].port),
+                                         udp_helpers.RawUDPEchoHelper())
+    raw_udp_echo_helper.startService()
 
 if config.helpers['http-return-json-headers'].port:
     print ("Starting HTTP return request helper on %s" %

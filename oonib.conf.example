@@ -40,6 +40,10 @@ helpers:
         address: null
         port: 57002
 
+    raw-udp-echo:
+        address: null
+        port: 57007
+
     daphn3:
         address: null
         yaml_file: null
